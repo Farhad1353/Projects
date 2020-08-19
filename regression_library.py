@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt 
+from Xavier import Xavier_normal, Xavier_uniform
 
 # DEFINE MEAN SQUARED ERROR LOSS FUNCTION
 def L(y_hat, labels):
@@ -12,8 +13,8 @@ class MultiVariableLinearHypothesis:
     def __init__(self, n_features, regularisation_factor): ## add regularisation factor as parameter
         self.n_features = n_features
         self.regularisation_factor = regularisation_factor ## add self.regularisation factor
-        self.b = np.random.randn()
-        self.w = np.random.randn(n_features)
+        self.b = 0
+        self.w = Xavier_normal(n_features)
         
     def __call__(self, X): # what happens when we call our model, input is of shape (n_examples, n_features)
         y_hat = np.matmul(X, self.w) + self.b # make prediction, now using vector of weights rather than a single value
@@ -28,7 +29,7 @@ class MultiVariableLinearHypothesis:
         diffs = y_hat-labels
         dLdw = 2 * np.array([np.sum(diffs * X[:, i]) / m for i in range(self.n_features)]) 
         dLdw += 2 * self.regularisation_factor * self.w ## add regularisation term gradient
-        dLdb = 2 * np.sum(diffs) / m
+        dLdb = 0 * 2 * np.sum(diffs) / m
         return dLdw, dLdb
 
 class LinearHypothesis:
@@ -67,6 +68,12 @@ def normalize_data(dataset):
   
     return normalized_dataset
 
+def convert_to_original(dataset, quality):
+
+    conv_origin  = quality * (np.max(dataset, axis=0) - np.min(dataset, axis=0)) + np.min(dataset, axis=0)
+  
+    return conv_origin
+
 
 def plot_loss(losses):
     plt.figure() # make a figure
@@ -97,9 +104,9 @@ def train(num_epochs, X, Y, H, L, learning_rate, plot_cost_curve=True):
         plot_loss(all_costs)
         
     print('Final cost:', "%.2f" % cost)
-    for feature in range(X.shape[1]):
-        print('Weight value for feature', feature, "%.4f"% H.w[feature])
-    print('Bias value:', "%.1f" % H.b)
+    #for feature in range(X.shape[1]):
+     #   print('Weight value for feature', feature, "%.4f"% H.w[feature])
+    #print('Bias value:', "%.1f" % H.b)
 
 
 
