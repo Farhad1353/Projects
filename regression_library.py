@@ -9,7 +9,7 @@ def L(y_hat, labels):
     mean_squared_error = np.sum(squared_errors) / (len(y_hat)) # calculate mean 
     return mean_squared_error # return loss
 
-def generate_new_list(X, num):
+def generate_new_list(X, num):   # generating the features of our new wines. Based on mean and STD of the existing Data
     new_list = np.zeros((num, X.shape[1]))
     mean_std_list = np.zeros((X.shape[1], 2))
     for i in range(X.shape[1]):
