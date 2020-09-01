@@ -34,21 +34,28 @@ class MultiVariableLinearHypothesis:
     def __init__(self, n_features, regularisation_factor): ## add regularisation factor as parameter
         self.n_features = n_features
         self.regularisation_factor = regularisation_factor ## add self.regularisation factor
-        self.w = np.random.rand(n_features)
+        self.w = np.random.rand(n_features)/100
+        self.b = np.random.rand()/100
                 
     def __call__(self, X): # what happens when we call our model, input is of shape (n_examples, n_features)
-        y_hat = np.matmul(X, self.w) # make prediction, now using vector of weights rather than a single value
+        y_hat = np.matmul(X, self.w) + self.b # make prediction, now using vector of weights rather than a single value
         return y_hat # output is of shape (n_examples, 1)
     
-    def update_params(self, new_w):
+    def update_params(self, new_w, new_b):
         self.w = new_w
+        self.b = new_b
         
     def calc_deriv(self, X, y_hat, labels):
         m = len(labels)
         diffs = y_hat-labels
-        dLdw = dLdw = 2 / m * np.matmul(X.T, diffs)
+        dLdw = 2 / m * np.matmul(X.T, diffs)
         dLdw += 2 * self.regularisation_factor * self.w ## add regularisation term gradient
-        return dLdw
+        dLdb = 2 * np.mean(diffs)
+        return dLdw, dLdb
+
+def check_percent_equal(quality_average, Y_test):
+    check_equal = (np.around(quality_average) == Y_test)
+    return 100*np.sum(check_equal)/len(Y_test)
 
 
 def normalize_data(dataset):
@@ -89,9 +96,10 @@ def train_test(num_epochs, X_tr, Y_tr,X_te, Y_te, H, L, learning_rate, plot_cost
         y_hat_test = H(X_te)
         cost_test = L(y_hat_test, Y_te) ## compute loss
         #print(cost_train, cost_test) 
-        dLdw = H.calc_deriv(X_tr, y_hat, Y_tr) ## calculate gradient of current loss with respect to model parameters
+        dLdw, dLdb = H.calc_deriv(X_tr, y_hat, Y_tr) ## calculate gradient of current loss with respect to model parameters
         new_w = H.w - learning_rate * dLdw ## compute new model weight using gradient descent update rule
-        H.update_params(new_w) ## update model weight and bias
+        new_b = H.b - learning_rate * dLdb
+        H.update_params(new_w,new_b) ## update model weight and bias
         all_costs_train.append(cost_train) ## add cost for this batch of examples to the list of costs (for plotting)
         all_costs_test.append(cost_test)
     cost_idx = np.linspace(1, num_epochs, num_epochs)
