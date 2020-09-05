@@ -11,11 +11,16 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score
 
 from utils import rgb2gray, get_regression_data, visualise_regression_data
-from project_library import read_csv_files, split_train_validation
+from assigning_library import read_csv_files, split_train_validation, split_features_labels
 
-my_train_File, my_test_File = read_csv_files("../Data/winequality-red-train.csv","../Data/winequality-red-test.csv")
+path_train_file = "../Data/winequality-red-train.csv"
+path_test_file = "../Data/winequality-red-test.csv"
+
+my_train_File, my_test_File = read_csv_files(path_train_file, path_test_file)
                                                                        
 header, X_train, X_validation, Y_train, Y_validation = split_train_validation(my_train_File, split_rate=0.25)
+
+X_test, Y_test = split_features_labels(my_test_File)
                                                                                     
 ###################################################################################################################
 ############################### This part is using Random Forest in Regression form ###############################

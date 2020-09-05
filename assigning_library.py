@@ -20,6 +20,13 @@ def split_train_validation(file_name, split_rate):
     = train_test_split(X_train_val, Y_train_val, test_size=split_rate, random_state=42)
     return(header, X_train, X_val, Y_train, Y_val)
 
+def split_features_labels(file_name):
+    X_ = np.array(file_name)                                                            
+    X_ = X_[1:,1:].astype(np.float)  
+    Y_ = X_[:,-1] 
+    X_ = X_[:,:-1]  
+    return(X_, Y_)
+
 
 
 
