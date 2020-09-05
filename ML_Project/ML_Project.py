@@ -141,20 +141,12 @@ regr_best_score = 0
 os.system('cls')
 print("\n              VotingRegressor performance ")
 print("            --------------------------------")
+ereg = VotingRegressor(estimators=[('rf', reg1), ('ad', reg3), ('gb', reg2)])
+ereg = ereg.fit(X_train, Y_train)          ### Fitting the VotingRegressor model #####
+Y_pred = np.around(ereg.predict(X_validation))   ##### Predicting the Labels based on the test features #####
+regr_score = accuracy_score(Y_validation, Y_pred)   ##### Calulating the accuracy of each model #####
 
-for idx in range(4):      ##### Loop to try the VotingRegressor several times #####
-    ereg = VotingRegressor(estimators=[('rf', reg1), ('ad', reg3), ('gb', reg2)])
-    ereg = ereg.fit(X_train, Y_train)          ### Fitting the VotingRegressor model #####
-    ereg_arr[idx] = ereg
-    Y_pred = np.around(ereg.predict(X_validation))   ##### Predicting the Labels based on the test features #####
-    regr_score = accuracy_score(Y_validation, Y_pred)   ##### Calulating the accuracy of each model #####
-    if regr_best_score < regr_score:                    ###########################################
-        regr_best_score = regr_score                    ### Assess if the new score is the best ###
-        best_idx = idx                                  ###########################################
-
-    print("Regressor Score for VotingRegressor : {:.2f}%".format(regr_score*100))  ## showing each score ##
-         ## showing the best score ##
-print("\nBest Regressor Score for VotingRegressor had index of {} with score of : {:.2f}%".format(best_idx, regr_best_score*100))
+print("Regressor Score for VotingRegressor : {:.2f}%".format(regr_score*100))  ## showing each score ##
 
 input("Press Enter to continue...")
 
@@ -166,24 +158,17 @@ input("Press Enter to continue...")
 reg1 = RandomForestRegressor(n_estimators = best_n_estimators_rf,  max_features = best_max_features_rf, max_depth = best_max_depth_rf)
 reg2 = AdaBoostRegressor(n_estimators = best_n_estimators_ad,  learning_rate = best_learning_rate_ad)
 reg3 = GradientBoostingRegressor(n_estimators = best_n_estimators_gb,  learning_rate = best_learning_rate_gb, max_depth = best_max_depth_gb)
-ereg_arr = np.empty(4, dtype=object)
-regr_best_score = 0
+
 os.system('cls')
 print("\n              StackingRegressor performance ")
 print("            --------------------------------")
-for idx in range(4): ##### Loop to try the StackingRegressor several times #####
-    ereg = StackingRegressor(estimators=[('rf', reg1), ('ad', reg2), ('gb', reg3)])
-    ereg = ereg.fit(X_train, Y_train)        ### Fitting the StackingRegressor model #####
-    ereg_arr[idx] = ereg    
-    Y_pred = np.around(ereg.predict(X_validation)) ##### Predicting the Labels based on the test features #####
-    regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model #####
-    if regr_best_score < regr_score:               ###########################################
-        regr_best_score = regr_score               ### Assess if the new score is the best ###
-        best_idx = idx                             ###########################################
+ereg = StackingRegressor(estimators=[('rf', reg1), ('ad', reg2), ('gb', reg3)])
+ereg = ereg.fit(X_train, Y_train)        ### Fitting the StackingRegressor model #####  
+Y_pred = np.around(ereg.predict(X_validation)) ##### Predicting the Labels based on the test features #####
+regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model ####
 
-    print("Regressor Score for StackingRegressor : {:.2f}%".format(regr_score*100))  ## showing each score ##
-         ## showing the best score ##
-print("\nBest Regressor Score for StackingRegressor had index of {} with score of : {:.2f}%".format(best_idx, regr_best_score*100))
+print("Regressor Score for StackingRegressor : {:.2f}%".format(regr_score*100))  ## showing each score ##
+    
 
 input("Press Enter to continue...")
 
