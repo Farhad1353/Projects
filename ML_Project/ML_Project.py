@@ -11,7 +11,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score
 
 from utils import rgb2gray, get_regression_data, visualise_regression_data
-from assigning_library import read_csv_files, split_train_validation, split_features_labels
+from assigning_library import read_csv_files, split_train_validation, split_features_labels, read_param
+from regression_library import low_high_param
 
 path_train_file = "../Data/winequality-red-train.csv"
 path_test_file = "../Data/winequality-red-test.csv"
@@ -29,27 +30,18 @@ best_regr_score_randomforest = 0
 progress_randomforest = 0
 regr_score_randomforest = 0
 
-n_estimator_strarting_point = 150
-n_estimator_ending_point = 300
-n_estimator_step_size = 50   
+n_estimator_midpoint, max_features_midpoint, max_depth_midpoint = read_param("../Data/RandomForest_reg.csv")
+print(n_estimator_midpoint)
+n_estimator_step_size = 50
+n_estimator_strarting_point, n_estimator_ending_point = low_high_param(n_estimator_midpoint, n_estimator_step_size)
 
-max_features_starting_point = 2
-max_features_ending_point = 4
-max_features_step_size = 1     
-
-max_depth_starting_point = 18
-max_depth_ending_point = 24
-max_depth_step_size = 2           
-
-number_of_n_estimators \
-= int((n_estimator_ending_point + n_estimator_step_size - n_estimator_strarting_point-1)/n_estimator_step_size)
-number_of_max_features \
-= int((max_features_ending_point + max_features_step_size - max_features_starting_point-1)/max_features_step_size)
-number_of_max_depth \
-= int((max_depth_ending_point + max_depth_step_size - max_depth_starting_point-1)/max_depth_step_size)
-
-total_number_of_randomforest_models = number_of_n_estimators * number_of_max_features * number_of_max_depth
-
+max_features_step_size = 1 
+max_features_starting_point, max_features_ending_point = low_high_param(max_features_midpoint,max_features_step_size)
+    
+max_depth_step_size = 2  
+max_depth_starting_point, max_depth_ending_point = low_high_param(max_depth_midpoint,max_depth_step_size)
+print(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size)
+         
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for max_features_idx in range(max_features_starting_point, max_features_ending_point, max_features_step_size):      
         for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
@@ -58,7 +50,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             print("Number of estimator of {} Maximum features of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, \
                     max_depth_idx, regr_score_randomforest*100))
-            progress_randomforest += 100/total_number_of_randomforest_models
+            progress_randomforest += 100/27
             randomforestregressor = RandomForestRegressor(n_estimators = n_estimator_idx,  \
                                     max_features = max_features_idx, max_depth = max_depth_idx)
             randomforestregressor.fit(X_train, Y_train)  
