@@ -83,50 +83,43 @@ input("Press Enter to continue...")
 ############## This part is using Ada Boost in Regression form(Part 2 of the Project) #########################
 ###################################################################################################################
 
-best_regr_score_randomforest = 0  # variable which shows the best scoring RandomForest model
-progress_randomforest = 0   # variable which indicates how far have we processed our RandomForest models
-regr_score_randomforest = 0 # variable which shows the score for each of the Random Forest model
+best_regr_score_adaboost = 0 # variable which shows the best scoring AdaBoost model
+progress_adaboost = 0  # variable which indicates how far have we processed our AdaBoost models
+regr_score_adaboost = 0 # variable which shows the score for each of the AdaBoost model
 
-n_estimator_midpoint, max_features_midpoint, max_depth_midpoint\
-                = read_param("../Data/RandomForest_reg.csv") # reading the parameters from 1st stage of RandomForest
-n_estimator_step_size = 50 # defining the step change of n_estimator moving from one model to another
+n_estimator_midpoint, learning_rate_midpoint , zero = read_param("../Data/AdaBoost_reg.csv") # reading the parameters from 1st stage of AdaBoost
+n_estimator_step_size = 5 # defining the step change of n_estimator moving from one model to another
 n_estimator_strarting_point, n_estimator_ending_point = low_high_param\
-(n_estimator_midpoint, n_estimator_step_size) # finding lowest and highest values for n_estimators of RandomForest
+(n_estimator_midpoint, n_estimator_step_size) # finding lowest and highest values for n_estimators of AdaBoost
 
-max_features_step_size = 1 # defining the step change of max_features moving from one model to another
-max_features_starting_point, max_features_ending_point = low_high_param\
-(max_features_midpoint,max_features_step_size) # finding lowest and highest values for max_features of RandomForest
-    
-max_depth_step_size = 2 # defining the step change of max_depth moving from one model to another
-max_depth_starting_point, max_depth_ending_point = low_high_param\
-(max_depth_midpoint,max_depth_step_size) # finding lowest and highest values for depth_features of RandomForest
+learning_rate_step_size = 4 # defining the step change of max_features moving from one model to another
+learning_rate_starting_point, learning_rate_ending_point = low_high_param\
+(learning_rate_midpoint, learning_rate_step_size) # finding lowest and highest values for learning_rate of AdaBoost
          
-                ### training and testing(through validation sets) all the RandomForest models
+                ### training and testing(through validation sets) all the AdaBoost models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
-    for max_features_idx in range(max_features_starting_point, max_features_ending_point, max_features_step_size):      
-        for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
-            os.system('cls')
-            print("Random Forest Progress : ",int(progress_randomforest),"%")  # showing the progress of the process
-            print("Number of estimator of {} Maximum features of {} and Maximum depth of {} \
-                    gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, \
-                    max_depth_idx, regr_score_randomforest*100))  # score of one single RandomForest model
-            progress_randomforest += 100/27
-            randomforestregressor = RandomForestRegressor(n_estimators = n_estimator_idx,  \
-                max_features = max_features_idx, max_depth = max_depth_idx) # assigning an instance of a RandomForest
-            randomforestregressor.fit(X_train, Y_train)  # fitting the train arrays to each RandomForest model
-            Y_prediction = np.around(randomforestregressor.predict(X_validation)) #predicting using the validation set
-            regr_score_randomforest = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
-            if regr_score_randomforest > best_regr_score_randomforest: # assessing if the new score is better 
-                best_n_estimators_randomforest = n_estimator_idx      # than the previous best score
-                best_max_features_randomforest = max_features_idx 
-                best_max_depth_randomforest = max_depth_idx  
-                best_regr_score_randomforest = regr_score_randomforest 
+    for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):       
+        os.system('cls')
+        print("Learning Rate Progress : ",int(progress_adaboost),"%")  # showing the progress of the process
+        print("Number of estimator of {}      Learning Rate of {} \
+        gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100,\
+        regr_score_adaboost*100))  # score of one single AdaBoost model
+        progress_adaboost += 100/9
+        adaboostregressor = AdaBoostRegressor(n_estimators = n_estimator_idx,\
+        learning_rate = learning_rate_idx/100) # assigning an instance of a AdaBoost
+        adaboostregressor.fit(X_train, Y_train)  # fitting the train arrays to each AdaBoost model
+        Y_prediction = np.around(adaboostregressor.predict(X_validation)) #predicting using the validation set
+        regr_score_adaboost = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+        if regr_score_adaboost > best_regr_score_adaboost: # assessing if the new score is better 
+            best_n_estimators_adaboost = n_estimator_idx      # than the previous best score
+            best_learning_rate_adaboost = learning_rate_idx  
+            best_regr_score_adaboost = regr_score_adaboost 
 os.system('cls')
-print("\n              Random Forest performance ")
-print("            --------------------------------") # show the best model of RandomForest tested on validation set
-print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_randomforest*100)) 
-print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : "\
-      , best_max_features_randomforest, "\nbest_max_depth : ",best_max_depth_randomforest)
+print("\n                  AdaBoost performance ")
+print("            --------------------------------") # show the best model of AdaBoost tested on validation set
+print("Best Regressor Score for AdaBoost : {:.2f}%".format(best_regr_score_adaboost*100)) 
+print("Best Estimator number : ", best_n_estimators_adaboost, "\nBest Learning rate : "\
+      , best_learning_rate_adaboost/100)
 
 input("Press Enter to continue...")
 
