@@ -11,15 +11,15 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from utils import rgb2gray, get_regression_data, visualise_regression_data
 from project_library import check_percent_equal, show_features_impact
-                                                                                ######################
-my_train_File = pd.read_csv("../Data/winequality-red-train.csv", header = None) ## Reading CSV files #
-my_test_File = pd.read_csv("../Data/winequality-red-test.csv", header = None)   ## by using Pandas   #
-                                                                              ######################
-X_train_validation = np.array(my_train_File)                                                    ####################                                            ### Assigning     ###
-header = X_train_validation[0,1:]                                                               ### train and     ###
-X_train_validation = X_train_validation[1:,1:].astype(np.float)  #converting the rest of the data to float ### test features ###
-Y_train_validation = X_train_validation[:,-1]  # separating the labels                                     ### the header to ###                                                             ### different     ###
-X_train_validation = X_train_validation[:,:-1]  # separating the features                                  ### variables.    ###
+                                                                            
+my_train_File = pd.read_csv("../Data/winequality-red-train.csv", header = None) 
+my_test_File = pd.read_csv("../Data/winequality-red-test.csv", header = None)   
+                                                                              
+X_train_validation = np.array(my_train_File)                                                                                               ### Assigning     ###
+header = X_train_validation[0,1:]                                                               
+X_train_validation = X_train_validation[1:,1:].astype(np.float)  
+Y_train_validation = X_train_validation[:,-1] 
+X_train_validation = X_train_validation[:,:-1]  
 
 X_train, X_validation, Y_train, Y_validation = train_test_split(X_train_validation, Y_train_validation, test_size=0.25, random_state=42)                                                               #####################
                                                                                     
@@ -38,19 +38,19 @@ max_features_starting_point = 2
 max_features_ending_point = 4
 max_features_step_size = 1     
 
-max_depth_starting_poin = 18
+max_depth_starting_point = 18
 max_depth_ending_point = 24
 max_depth_step_size = 2           
 
-number_of_n_estimators = int((n_estimator_ending_point+n_estimator_step_size-n_estimator_strarting_point-1)/n_estimator_step_size)
-number_of_max_features = int((max_features_ending_point+max_features_step_size-max_features_starting_point-1)/max_features_step_size)
-number_of_max_depth = int((max_depth_ending_point+max_depth_step_size-max_depth_starting_point-1)/max_depth_step_size)
+number_of_n_estimators = int((n_estimator_ending_point + n_estimator_step_size - n_estimator_strarting_point-1)/n_estimator_step_size)
+number_of_max_features = int((max_features_ending_point + max_features_step_size - max_features_starting_point-1)/max_features_step_size)
+number_of_max_depth = int((max_depth_ending_point + max_depth_step_size - max_depth_starting_point-1)/max_depth_step_size)
 
 total_number_of_randomforest_models = number_of_n_estimators * number_of_max_features * number_of_max_depth
 
-for est_idx in range(est_str, est_end, est_stp):             
-    for maxf_idx in range(maxf_str, maxf_end, maxf_stp):      
-        for maxd_idx in range(maxd_str, maxd_end, maxd_stp):  
+for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
+    for max_features_idx in range(max_features_starting_point, max_features_ending_point, max_features_step_size):      
+        for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
             print("Random Forest Progress : ",int(progress),"%")
             print("Number of estimator of {} Maximum features of {} and Maximum depth of {}  gives accuracy score of {:.2f}%".format(est_idx, maxf_idx, maxd_idx, regr_score*100))
