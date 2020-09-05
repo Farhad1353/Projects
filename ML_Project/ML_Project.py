@@ -9,20 +9,13 @@ from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientB
                             , VotingRegressor, StackingRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+
 from utils import rgb2gray, get_regression_data, visualise_regression_data
-from project_library import read_csv_files
+from project_library import read_csv_files, split_train_validation
 
 my_train_File, my_test_File = read_csv_files("../Data/winequality-red-train.csv","../Data/winequality-red-test.csv")
                                                                        
-X_train_validation = np.array(my_train_File)                                                                                               ### Assigning     ###
-header = X_train_validation[0,1:]                                                               
-X_train_validation = X_train_validation[1:,1:].astype(np.float)  
-Y_train_validation = X_train_validation[:,-1] 
-X_train_validation = X_train_validation[:,:-1]  
-
-X_train, X_validation, Y_train, Y_validation \
-= train_test_split(X_train_validation, Y_train_validation, test_size=0.25, random_state=42)                                                               #####################
+header, X_train, X_validation, Y_train, Y_validation = split_train_validation(my_train_File, split_rate=0.25)
                                                                                     
 ###################################################################################################################
 ############################### This part is using Random Forest in Regression form ###############################
