@@ -1,27 +1,31 @@
-import sys
+import sys                     # import libraries
 sys.path.append('..')
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-
+                         
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor\
-                            , VotingRegressor, StackingRegressor
-from sklearn.linear_model import LinearRegression
+                            , VotingRegressor, StackingRegressor     # import sklearn libraries 
+from sklearn.linear_model import LinearRegression 
 from sklearn.metrics import accuracy_score
 
-from utils import rgb2gray, get_regression_data, visualise_regression_data
+from utils import rgb2gray, get_regression_data, visualise_regression_data # import our libraries
 from assigning_library import read_csv_files, split_train_validation, split_features_labels, read_param
 from regression_library import low_high_param
 
-path_train_file = "../Data/winequality-red-train.csv"
-path_test_file = "../Data/winequality-red-test.csv"
 
-my_train_File, my_test_File = read_csv_files(path_train_file, path_test_file)
+### This is Part 1 of the project where we read the train and test csv files and splittig them to features and labels
+
+path_train_file = "../Data/winequality-red-train.csv"  # assigning the train.csv file path to a variable
+path_test_file = "../Data/winequality-red-test.csv"  # assigning the test.csv file path to a variable
+
+my_train_File, my_test_File = read_csv_files(path_train_file, path_test_file)  # reading the csv files using pandas
                                                                        
-header, X_train, X_validation, Y_train, Y_validation = split_train_validation(my_train_File, split_rate=0.25)
+header, X_train, X_validation, Y_train, Y_validation\
+= split_train_validation(my_train_File, split_rate=0.25)  # splitting the train.csv to train and validation arrays
 
-X_test, Y_test = split_features_labels(my_test_File)
+X_test, Y_test = split_features_labels(my_test_File) # splitting the test.csv file to features and label arrays
                                                                                     
 ###################################################################################################################
 ############################### This part is using Random Forest in Regression form ###############################
