@@ -61,7 +61,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
             print("Random Forest Progress : ",int(progress_randomforest),"%") # showing the progress of the process
-            print("Number of estimator of {} Maximum features of {} and Maximum depth of {} \
+            print("Number of estimators of {}      Maximum features of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, \
                     max_depth_idx, regr_score_randomforest*100))  # score of one single RandomForest model
             progress_randomforest += 100/total_number_of_randomforest_models
@@ -81,6 +81,11 @@ print("            --------------------------------")  # show the best model of 
 print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_randomforest*100)) 
 print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : "\
       , best_max_features_randomforest, "\nbest_max_depth : ",best_max_depth_randomforest)
+
+randomforest_best_parameters = np.array([best_n_estimators_randomforest\
+                              , best_max_features_randomforest, best_max_depth_randomforest])
+
+np.savetxt('../Data/RandomForest_reg.csv', randomforest_best_parameters, fmt="%d", delimiter=",")
 
 input("Press Enter to continue...")
 
