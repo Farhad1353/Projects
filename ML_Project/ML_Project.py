@@ -26,34 +26,48 @@ X_train, X_validation, Y_train, Y_validation = train_test_split(X_train_validati
 ###################################################################################################################
 ############################### This part is using Random Forest in Regression form ###############################
 ###################################################################################################################
-best_regr_score_randomforest, progress_randomforest, regr_score_randomforest = 0, 0, 0 #######################################
-n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size = 150, 300, 50           ##### Setting the HyperParameters #####
-max_features_starting_point, max_features_ending_point, max_features_step_size = 2, 4, 1             ##### for Random Forest Regressor #####
-max_depth_starting_point, max_depth_ending_point, max_depth_step_size = 18, 24, 2           #######################################
+best_regr_score_randomforest = 0
+progress_randomforest = 0
+regr_score_randomforest = 0
 
-#################### total number of RandomForest models is calcualeted here ####################################################
-total_number_of_randomforest_models = int((est_end+est_stp-est_str-1)/est_stp)*int((maxf_end+maxf_stp-maxf_str-1)/maxf_stp)*int((maxd_end+maxd_stp-maxd_str-1)/maxd_stp)
-for est_idx in range(est_str, est_end, est_stp):              ##################################################
-    for maxf_idx in range(maxf_str, maxf_end, maxf_stp):      ## Nested loops to test all the HyperParameters ##
-        for maxd_idx in range(maxd_str, maxd_end, maxd_stp):  ##################################################
+n_estimator_strarting_point = 150
+n_estimator_ending_point = 300
+n_estimator_step_size = 50   
+
+max_features_starting_point = 2
+max_features_ending_point = 4
+max_features_step_size = 1     
+
+max_depth_starting_poin = 18
+max_depth_ending_point = 24
+max_depth_step_size = 2           
+
+number_of_n_estimators = int((n_estimator_ending_point+n_estimator_step_size-n_estimator_strarting_point-1)/n_estimator_step_size)
+number_of_max_features = int((max_features_ending_point+max_features_step_size-max_features_starting_point-1)/max_features_step_size)
+number_of_max_depth = int((max_depth_ending_point+max_depth_step_size-max_depth_starting_point-1)/max_depth_step_size)
+
+total_number_of_randomforest_models = number_of_n_estimators * number_of_max_features * number_of_max_depth
+
+for est_idx in range(est_str, est_end, est_stp):             
+    for maxf_idx in range(maxf_str, maxf_end, maxf_stp):      
+        for maxd_idx in range(maxd_str, maxd_end, maxd_stp):  
             os.system('cls')
             print("Random Forest Progress : ",int(progress),"%")
             print("Number of estimator of {} Maximum features of {} and Maximum depth of {}  gives accuracy score of {:.2f}%".format(est_idx, maxf_idx, maxd_idx, regr_score*100))
             progress += 100/total_steps
             regr = RandomForestRegressor(n_estimators = est_idx,  max_features = maxf_idx, max_depth = maxd_idx)
-            regr.fit(X_train, Y_train)  ### Fitting the RandomForest model #####
-            Y_pred = np.around(regr.predict(X_validation))  ##### Predicting the Labels based on the test features #####
-            regr_score = accuracy_score(Y_validation, Y_pred) ##### Calulating the accuracy of each model #####
-            if regr_score > best_regr_score_rf:  #########################################
-                best_n_estimators_rf = est_idx   ###### Assessing if the model has  ######
-                best_max_features_rf = maxf_idx  ###### the best score so far based ######
-                best_max_depth_rf = maxd_idx     ###### the HyperParameters chosen  ######
-                best_regr_score_rf = regr_score  #########################################
+            regr.fit(X_train, Y_train)  
+            Y_pred = np.around(regr.predict(X_validation))  
+            regr_score = accuracy_score(Y_validation, Y_pred)
+            if regr_score > best_regr_score_rf:  
+                best_n_estimators_rf = est_idx   
+                best_max_features_rf = maxf_idx  
+                best_max_depth_rf = maxd_idx    
+                best_regr_score_rf = regr_score  
 os.system('cls')
 print("\n              Random Forest performance ")
 print("            --------------------------------")
-print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_rf*100)) ## showing the best score ##
-################# showing the best estimaters #################
+print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_rf*100)) 
 print("Best Estimator number : ", best_n_estimators_rf, "\nBest Features number : ", best_max_features_rf, "\nbest_max_depth : ",best_max_depth_rf)
 
 input("Press Enter to continue...")
