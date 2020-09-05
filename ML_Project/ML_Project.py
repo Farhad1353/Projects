@@ -52,23 +52,23 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
     for max_features_idx in range(max_features_starting_point, max_features_ending_point, max_features_step_size):      
         for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
-            print("Random Forest Progress : ",int(progress),"%")
-            print("Number of estimator of {} Maximum features of {} and Maximum depth of {}  gives accuracy score of {:.2f}%".format(est_idx, maxf_idx, maxd_idx, regr_score*100))
-            progress += 100/total_steps
-            regr = RandomForestRegressor(n_estimators = est_idx,  max_features = maxf_idx, max_depth = maxd_idx)
-            regr.fit(X_train, Y_train)  
-            Y_pred = np.around(regr.predict(X_validation))  
-            regr_score = accuracy_score(Y_validation, Y_pred)
-            if regr_score > best_regr_score_rf:  
-                best_n_estimators_rf = est_idx   
-                best_max_features_rf = maxf_idx  
-                best_max_depth_rf = maxd_idx    
-                best_regr_score_rf = regr_score  
+            print("Random Forest Progress : ",int(progress_randomforest),"%")
+            print("Number of estimator of {} Maximum features of {} and Maximum depth of {}  gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, max_depth_idx, regr_score_randomforest*100))
+            progress_randomforest += 100/total_number_of_randomforest_models
+            randomforestregressor = RandomForestRegressor(n_estimators = n_estimator_idx,  max_features = max_features_idx, max_depth = max_depth_idx)
+            randomforestregressor.fit(X_train, Y_train)  
+            Y_prediction = np.around(randomforestregressor.predict(X_validation))  
+            regr_score_randomforest = accuracy_score(Y_validation, Y_prediction)
+            if regr_score_randomforest > best_regr_score_randomforest:  
+                best_n_estimators_randomforest = n_estimator_idx  
+                best_max_features_randomforest = max_features_idx 
+                best_max_depth_randomforest = max_depth_idx  
+                best_regr_score_randomforest = regr_score_randomforest 
 os.system('cls')
 print("\n              Random Forest performance ")
 print("            --------------------------------")
-print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_rf*100)) 
-print("Best Estimator number : ", best_n_estimators_rf, "\nBest Features number : ", best_max_features_rf, "\nbest_max_depth : ",best_max_depth_rf)
+print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_randomforest*100)) 
+print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : ", best_max_features_randomforest, "\nbest_max_depth : ",best_max_depth_randomforest)
 
 input("Press Enter to continue...")
 
@@ -146,7 +146,7 @@ input("Press Enter to continue...")
 ###################################################################################################################
 
 ########### Assigning the best performed HyperParameters to the RandomForest, AdaBoost and GradientBoost ##########
-reg1 = RandomForestRegressor(n_estimators = best_n_estimators_rf,  max_features = best_max_features_rf, max_depth = best_max_depth_rf)
+reg1 = RandomForestRegressor(n_estimators = best_n_estimators_randomforest,  max_features = best_max_features_randomforest, max_depth = best_max_depth_randomforest)
 reg2 = AdaBoostRegressor(n_estimators = best_n_estimators_ad,  learning_rate = best_learning_rate_ad)
 reg3 = GradientBoostingRegressor(n_estimators = best_n_estimators_gb,  learning_rate = best_learning_rate_gb, max_depth = best_max_depth_gb)
 
@@ -169,7 +169,7 @@ input("Press Enter to continue...")
 ###################################################################################################################
 
 ########### Assigning the best performed HyperParameters to the RandomForest, AdaBoost and GradientBoost ##########
-reg1 = RandomForestRegressor(n_estimators = best_n_estimators_rf,  max_features = best_max_features_rf, max_depth = best_max_depth_rf)
+reg1 = RandomForestRegressor(n_estimators = best_n_estimators_randomforest,  max_features = best_max_features_randomforest, max_depth = best_max_depth_randomforest)
 reg2 = AdaBoostRegressor(n_estimators = best_n_estimators_ad,  learning_rate = best_learning_rate_ad)
 reg3 = GradientBoostingRegressor(n_estimators = best_n_estimators_gb,  learning_rate = best_learning_rate_gb, max_depth = best_max_depth_gb)
 
