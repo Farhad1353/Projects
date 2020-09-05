@@ -8,21 +8,20 @@ import os
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor, VotingRegressor, StackingRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 from utils import rgb2gray, get_regression_data, visualise_regression_data
 from project_library import check_percent_equal, show_features_impact
                                                                                 ######################
 my_train_File = pd.read_csv("../Data/winequality-red-train.csv", header = None) ## Reading CSV files #
 my_test_File = pd.read_csv("../Data/winequality-red-test.csv", header = None)   ## by using Pandas   #
-                                                                                ######################
-X_train = np.array(my_train_File)                                                    #####################
-X_test = np.array(my_test_File)                                                      ### Assigning     ###
-header = X_train[0,1:]                                                               ### train and     ###
-X_train = X_train[1:,1:].astype(np.float)  #converting the rest of the data to float ### test features ###
-X_test = X_test[1:,1:].astype(np.float)  #converting the rest of the data to float   ### & labels also ###
-Y_train = X_train[:,-1]  # separating the labels                                     ### the header to ###
-Y_test = X_test[:,-1]                                                                ### different     ###
-X_train = X_train[:,:-1]  # separating the features                                  ### variables.    ###
-X_test = X_test[:,:-1]                                                               #####################
+                                                                              ######################
+X_train_validation = np.array(my_train_File)                                                    ####################                                            ### Assigning     ###
+header = X_train_validation[0,1:]                                                               ### train and     ###
+X_train_validation = X_train_validation[1:,1:].astype(np.float)  #converting the rest of the data to float ### test features ###
+Y_train_validation = X_train_validation[:,-1]  # separating the labels                                     ### the header to ###                                                             ### different     ###
+X_train_validation = X_train_validation[:,:-1]  # separating the features                                  ### variables.    ###
+
+X_train, X_validation, Y_train, Y_validation = train_test_split(X_train_validation, Y_train_validation, test_size=0.25, random_state=42)                                                               #####################
                                                                                     
 ###################################################################################################################
 ############################### This part is using Random Forest in Regression form ###############################
@@ -43,8 +42,8 @@ for est_idx in range(est_str, est_end, est_stp):              ##################
             progress += 100/total_steps
             regr = RandomForestRegressor(n_estimators = est_idx,  max_features = maxf_idx, max_depth = maxd_idx)
             regr.fit(X_train, Y_train)  ### Fitting the RandomForest model #####
-            Y_pred = np.around(regr.predict(X_test))  ##### Predicting the Labels based on the test features #####
-            regr_score = accuracy_score(Y_test, Y_pred) ##### Calulating the accuracy of each model #####
+            Y_pred = np.around(regr.predict(X_validation))  ##### Predicting the Labels based on the test features #####
+            regr_score = accuracy_score(Y_validation, Y_pred) ##### Calulating the accuracy of each model #####
             if regr_score > best_regr_score_rf:  #########################################
                 best_n_estimators_rf = est_idx   ###### Assessing if the model has  ######
                 best_max_features_rf = maxf_idx  ###### the best score so far based ######
@@ -77,8 +76,8 @@ for est_idx in range(est_str, est_end, est_stp):            ####################
         progress += 100/total_steps
         regr = AdaBoostRegressor(n_estimators =est_idx,  learning_rate = maxf_idx/100)
         regr.fit(X_train, Y_train)   ### Fitting the AdaBoost model #####
-        Y_pred = np.around(regr.predict(X_test))  ##### Predicting the Labels based on the test features #####
-        regr_score = accuracy_score(Y_test, Y_pred)  ##### Calulating the accuracy of each model #####
+        Y_pred = np.around(regr.predict(X_validation))  ##### Predicting the Labels based on the test features #####
+        regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model #####
         if regr_score > best_regr_score_ad:           ################################################
             best_n_estimators_ad = est_idx            ##  Assessing if the model has the best score ##
             best_learning_rate_ad = maxf_idx/100      ## so far based on the chosen HyperParameters ##
@@ -112,8 +111,8 @@ for est_idx in range(est_str, est_end, est_stp):              ##################
             progress += 100/total_steps
             regr = GradientBoostingRegressor(n_estimators =est_idx,  learning_rate = maxf_idx/100, max_depth = maxd_idx)
             regr.fit(X_train, Y_train)   ### Fitting the GradientBoost model #####
-            Y_pred = np.around(regr.predict(X_test)) ##### Predicting the Labels based on the test features #####
-            regr_score = accuracy_score(Y_test, Y_pred)  ##### Calulating the accuracy of each model #####
+            Y_pred = np.around(regr.predict(X_validation)) ##### Predicting the Labels based on the test features #####
+            regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model #####
             if regr_score > best_regr_score_gb:           ##########################################
                 best_n_estimators_gb = est_idx            ##  Assessing if the model has the best ##
                 best_learning_rate_gb = maxf_idx/100      ##  score so far based on the chosen    ##
@@ -147,8 +146,8 @@ for idx in range(4):      ##### Loop to try the VotingRegressor several times ##
     ereg = VotingRegressor(estimators=[('rf', reg1), ('ad', reg3), ('gb', reg2)])
     ereg = ereg.fit(X_train, Y_train)          ### Fitting the VotingRegressor model #####
     ereg_arr[idx] = ereg
-    Y_pred = np.around(ereg.predict(X_test))   ##### Predicting the Labels based on the test features #####
-    regr_score = accuracy_score(Y_test, Y_pred)   ##### Calulating the accuracy of each model #####
+    Y_pred = np.around(ereg.predict(X_validation))   ##### Predicting the Labels based on the test features #####
+    regr_score = accuracy_score(Y_validation, Y_pred)   ##### Calulating the accuracy of each model #####
     if regr_best_score < regr_score:                    ###########################################
         regr_best_score = regr_score                    ### Assess if the new score is the best ###
         best_idx = idx                                  ###########################################
@@ -176,8 +175,8 @@ for idx in range(4): ##### Loop to try the StackingRegressor several times #####
     ereg = StackingRegressor(estimators=[('rf', reg1), ('ad', reg2), ('gb', reg3)])
     ereg = ereg.fit(X_train, Y_train)        ### Fitting the StackingRegressor model #####
     ereg_arr[idx] = ereg    
-    Y_pred = np.around(ereg.predict(X_test)) ##### Predicting the Labels based on the test features #####
-    regr_score = accuracy_score(Y_test, Y_pred)  ##### Calulating the accuracy of each model #####
+    Y_pred = np.around(ereg.predict(X_validation)) ##### Predicting the Labels based on the test features #####
+    regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model #####
     if regr_best_score < regr_score:               ###########################################
         regr_best_score = regr_score               ### Assess if the new score is the best ###
         best_idx = idx                             ###########################################
@@ -189,7 +188,7 @@ print("\nBest Regressor Score for StackingRegressor had index of {} with score o
 input("Press Enter to continue...")
 
 ###################################################################################################################
-######## This part is using Linear Regression to represent the most effective features impacting the labels #######
+######## PART 6This part is using Linear Regression to represent the most effective features impacting the labels #######
 ###################################################################################################################
 os.system('cls')
 regr = LinearRegression()
@@ -197,8 +196,8 @@ regr.fit(X_train, Y_train) ### Fitting the LinearRegression model #####
 print("\n              Linear Regresson performance ")
 print("            --------------------------------")
 
-Y_pred = np.around(regr.predict(X_test))  ##### Predicting the Labels based on the test features #####
-regr_score = accuracy_score(Y_test, Y_pred)  ##### Calulating the accuracy of the model #####
+Y_pred = np.around(regr.predict(X_validation))  ##### Predicting the Labels based on the test features #####
+regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of the model #####
 print("Regressor Score for LinearRegression: {:.2f}%".format(regr_score*100))
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 input("Press Enter to continue...")
