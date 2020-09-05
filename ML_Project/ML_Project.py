@@ -5,7 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor, VotingRegressor, StackingRegressor
+from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor\
+                            , VotingRegressor, StackingRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
@@ -21,7 +22,8 @@ X_train_validation = X_train_validation[1:,1:].astype(np.float)
 Y_train_validation = X_train_validation[:,-1] 
 X_train_validation = X_train_validation[:,:-1]  
 
-X_train, X_validation, Y_train, Y_validation = train_test_split(X_train_validation, Y_train_validation, test_size=0.25, random_state=42)                                                               #####################
+X_train, X_validation, Y_train, Y_validation \
+= train_test_split(X_train_validation, Y_train_validation, test_size=0.25, random_state=42)                                                               #####################
                                                                                     
 ###################################################################################################################
 ############################### This part is using Random Forest in Regression form ###############################
@@ -42,9 +44,12 @@ max_depth_starting_point = 18
 max_depth_ending_point = 24
 max_depth_step_size = 2           
 
-number_of_n_estimators = int((n_estimator_ending_point + n_estimator_step_size - n_estimator_strarting_point-1)/n_estimator_step_size)
-number_of_max_features = int((max_features_ending_point + max_features_step_size - max_features_starting_point-1)/max_features_step_size)
-number_of_max_depth = int((max_depth_ending_point + max_depth_step_size - max_depth_starting_point-1)/max_depth_step_size)
+number_of_n_estimators \
+= int((n_estimator_ending_point + n_estimator_step_size - n_estimator_strarting_point-1)/n_estimator_step_size)
+number_of_max_features \
+= int((max_features_ending_point + max_features_step_size - max_features_starting_point-1)/max_features_step_size)
+number_of_max_depth \
+= int((max_depth_ending_point + max_depth_step_size - max_depth_starting_point-1)/max_depth_step_size)
 
 total_number_of_randomforest_models = number_of_n_estimators * number_of_max_features * number_of_max_depth
 
@@ -53,9 +58,12 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
             print("Random Forest Progress : ",int(progress_randomforest),"%")
-            print("Number of estimator of {} Maximum features of {} and Maximum depth of {}  gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, max_depth_idx, regr_score_randomforest*100))
+            print("Number of estimator of {} Maximum features of {} and Maximum depth of {} \
+                    gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, \
+                    max_depth_idx, regr_score_randomforest*100))
             progress_randomforest += 100/total_number_of_randomforest_models
-            randomforestregressor = RandomForestRegressor(n_estimators = n_estimator_idx,  max_features = max_features_idx, max_depth = max_depth_idx)
+            randomforestregressor = RandomForestRegressor(n_estimators = n_estimator_idx,  \
+                                    max_features = max_features_idx, max_depth = max_depth_idx)
             randomforestregressor.fit(X_train, Y_train)  
             Y_prediction = np.around(randomforestregressor.predict(X_validation))  
             regr_score_randomforest = accuracy_score(Y_validation, Y_prediction)
@@ -68,7 +76,8 @@ os.system('cls')
 print("\n              Random Forest performance ")
 print("            --------------------------------")
 print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_randomforest*100)) 
-print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : ", best_max_features_randomforest, "\nbest_max_depth : ",best_max_depth_randomforest)
+print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : "\
+      , best_max_features_randomforest, "\nbest_max_depth : ",best_max_depth_randomforest)
 
 input("Press Enter to continue...")
 
