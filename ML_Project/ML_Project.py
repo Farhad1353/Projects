@@ -26,13 +26,13 @@ X_train, X_validation, Y_train, Y_validation = train_test_split(X_train_validati
 ###################################################################################################################
 ############################### This part is using Random Forest in Regression form ###############################
 ###################################################################################################################
-best_regr_score_rf, progress, regr_score = 0, 0, 0 #######################################
-est_str, est_end, est_stp = 150, 300, 50           ##### Setting the HyperParameters #####
-maxf_str, maxf_end, maxf_stp = 2, 4, 1             ##### for Random Forest Regressor #####
-maxd_str, maxd_end, maxd_stp = 18, 24, 2           #######################################
+best_regr_score_randomforest, progress_randomforest, regr_score_randomforest = 0, 0, 0 #######################################
+n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size = 150, 300, 50           ##### Setting the HyperParameters #####
+max_features_starting_point, max_features_ending_point, max_features_step_size = 2, 4, 1             ##### for Random Forest Regressor #####
+max_depth_starting_point, max_depth_ending_point, max_depth_step_size = 18, 24, 2           #######################################
 
 #################### total number of RandomForest models is calcualeted here ####################################################
-total_steps = int((est_end+est_stp-est_str-1)/est_stp)*int((maxf_end+maxf_stp-maxf_str-1)/maxf_stp)*int((maxd_end+maxd_stp-maxd_str-1)/maxd_stp)
+total_number_of_randomforest_models = int((est_end+est_stp-est_str-1)/est_stp)*int((maxf_end+maxf_stp-maxf_str-1)/maxf_stp)*int((maxd_end+maxd_stp-maxd_str-1)/maxd_stp)
 for est_idx in range(est_str, est_end, est_stp):              ##################################################
     for maxf_idx in range(maxf_str, maxf_end, maxf_stp):      ## Nested loops to test all the HyperParameters ##
         for maxd_idx in range(maxd_str, maxd_end, maxd_stp):  ##################################################
