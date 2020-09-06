@@ -29,7 +29,7 @@ header, X_train, X_validation, Y_train, Y_validation\
 X_test, Y_test = split_features_labels(my_test_File) # splitting the test.csv file to features and label arrays
                                                                                     
 ###################################################################################################################
-############## This part is using Random Forest in Regression form(Part 2 of the Project) #########################
+############## This part is using Random Forest in Regression form(Parts 2 & 3 of the Project) ####################
 ###################################################################################################################
 
 best_regr_score_randomforest = 0  # variable which shows the best scoring RandomForest model
@@ -80,7 +80,7 @@ print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Featur
 input("Press Enter to continue...")
 
 ###################################################################################################################
-################### This part is using AdaBoost in Regression form(Part 2 of the Project) #########################
+################### This part is using AdaBoost in Regression form(Parts 2 & 3 of the Project) ####################
 ###################################################################################################################
 
 best_regr_score_adaboost = 0 # variable which shows the best scoring AdaBoost model
@@ -100,7 +100,7 @@ learning_rate_starting_point, learning_rate_ending_point = low_high_param\
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):       
         os.system('cls')
-        print("Learning Rate Progress : ",int(progress_adaboost),"%")  # showing the progress of the process
+        print("AdaBoost Progress : ",int(progress_adaboost),"%")  # showing the progress of the process
         print("Number of estimator of {}      Learning Rate of {} \
         gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100,\
         regr_score_adaboost*100))  # score of one single AdaBoost model
@@ -124,7 +124,7 @@ print("Best Estimator number : ", best_n_estimators_adaboost, "\nBest Learning r
 input("Press Enter to continue...")
 
 ###################################################################################################################
-############## This part is using Gradientboosting in Regression form(Part 2 of the Project) ######################
+############## This part is using Gradientboosting in Regression form(Parts 2 & 3 of the Project) #################
 ###################################################################################################################
 
 best_regr_score_gradientboosting = 0  # variable which shows the best scoring Gradientboosting model
@@ -150,7 +150,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
     for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):      
         for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
-            print("Random Forest Progress : ",int(progress_gradientboosting),"%")  # showing the progress of the process
+            print("GradientBoosting Progress : ",int(progress_gradientboosting),"%")  # showing the progress of the process
             print("Number of estimator of {}     Learning rate of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100, \
                     max_depth_idx, regr_score_gradientboosting*100))  # score of one single Gradientboosting model
@@ -175,48 +175,27 @@ print("Best Estimator number : ", best_n_estimators_gradientboosting, "\nBest Le
 input("Press Enter to continue...")
 
 ###################################################################################################################
-############################# This part is implementing VotingRegressor ###########################################
+##################### This part is implementing StackingRegressor(Part 4 of the project) ##########################
 ###################################################################################################################
 
-########### Assigning the best performed HyperParameters to the RandomForest, AdaBoost and GradientBoost ##########
-reg1 = RandomForestRegressor(n_estimators = best_n_estimators_randomforest,  max_features = best_max_features_randomforest, max_depth = best_max_depth_randomforest)
-reg2 = AdaBoostRegressor(n_estimators = best_n_estimators_ad,  learning_rate = best_learning_rate_ad)
-reg3 = GradientBoostingRegressor(n_estimators = best_n_estimators_gb,  learning_rate = best_learning_rate_gb, max_depth = best_max_depth_gb)
-
-ereg_arr = np.empty(4, dtype=object)
-regr_best_score = 0
-os.system('cls')
-print("\n              VotingRegressor performance ")
-print("            --------------------------------")
-ereg = VotingRegressor(estimators=[('rf', reg1), ('ad', reg3), ('gb', reg2)])
-ereg = ereg.fit(X_train, Y_train)          ### Fitting the VotingRegressor model #####
-Y_pred = np.around(ereg.predict(X_validation))   ##### Predicting the Labels based on the test features #####
-regr_score = accuracy_score(Y_validation, Y_pred)   ##### Calulating the accuracy of each model #####
-
-print("Regressor Score for VotingRegressor : {:.2f}%".format(regr_score*100))  ## showing each score ##
-
-input("Press Enter to continue...")
-
-###################################################################################################################
-######################### This part is implementing StackingRegressor #############################################
-###################################################################################################################
-
-########### Assigning the best performed HyperParameters to the RandomForest, AdaBoost and GradientBoost ##########
-reg1 = RandomForestRegressor(n_estimators = best_n_estimators_randomforest,  max_features = best_max_features_randomforest, max_depth = best_max_depth_randomforest)
-reg2 = AdaBoostRegressor(n_estimators = best_n_estimators_ad,  learning_rate = best_learning_rate_ad)
-reg3 = GradientBoostingRegressor(n_estimators = best_n_estimators_gb,  learning_rate = best_learning_rate_gb, max_depth = best_max_depth_gb)
+######### Assigning the best performed HyperParameters in the RandomForest, AdaBoost and GradientBoosting ##########
+reg1 = RandomForestRegressor(n_estimators = best_n_estimators_randomforest\
+    ,  max_features = best_max_features_randomforest, max_depth = best_max_depth_randomforest)
+reg2 = AdaBoostRegressor(n_estimators = best_n_estimators_adaboost,  learning_rate = best_learning_rate_adaboost/100)
+reg3 = GradientBoostingRegressor(n_estimators = best_n_estimators_gradientboosting\
+    ,  learning_rate = best_learning_rate_gradientboosting/100, max_depth = best_max_depth_gradientboosting)
 
 os.system('cls')
 print("\n              StackingRegressor performance ")
 print("            --------------------------------")
-ereg = StackingRegressor(estimators=[('rf', reg1), ('ad', reg2), ('gb', reg3)])
-ereg = ereg.fit(X_train, Y_train)        ### Fitting the StackingRegressor model #####  
-Y_pred = np.around(ereg.predict(X_validation)) ##### Predicting the Labels based on the test features #####
-regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model ####
+print("Please wait few moments for the final result...")
+stackingregressor = StackingRegressor(estimators=[('rf', reg1), ('ad', reg2), ('gb', reg3)])
+stackingregressor = stackingregressor.fit(X_train, Y_train)        ### Fitting the StackingRegressor model #####  
+Y_pred = np.around(stackingregressor.predict(X_validation)) ##### Predicting the Labels based on the test features #####
+ensemble_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model ####
 
-print("Regressor Score for StackingRegressor : {:.2f}%".format(regr_score*100))  ## showing each score ##
+print("Regressor Score for StackingRegressor : {:.2f}%".format(ensemble_score*100))  ## showing the ensemble score ##
     
-
 input("Press Enter to continue...")
 
 ###################################################################################################################
