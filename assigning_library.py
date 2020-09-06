@@ -5,13 +5,18 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
-def read_param(path):
+def read_param(path, param=3):
     my_file = pd.read_csv(path, header = None)
     my_param = np.array(my_file)
-    param1 = np.squeeze(my_param[0].astype(np.int))
-    param2 = np.squeeze(my_param[1].astype(np.int))
-    param3 = np.squeeze(my_param[2].astype(np.int))
-    return param1, param2, param3
+    if param == 3:
+        param1 = np.squeeze(my_param[0].astype(np.int))
+        param2 = np.squeeze(my_param[1].astype(np.int))
+        param3 = np.squeeze(my_param[2].astype(np.int))
+        return param1, param2, param3
+    else:
+        param1 = np.squeeze(my_param[0].astype(np.int))
+        param2 = np.squeeze(my_param[1].astype(np.int))
+        return param1, param2
 
 def read_csv_files(path1, path2):
     train_File = pd.read_csv(path1, header = None) 

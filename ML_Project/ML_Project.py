@@ -37,18 +37,18 @@ progress_randomforest = 0   # variable which indicates how far have we processed
 regr_score_randomforest = 0 # variable which shows the score for each of the Random Forest model
 
 n_estimator_midpoint, max_features_midpoint, max_depth_midpoint\
-                = read_param("../Data/RandomForest_reg.csv") # reading the parameters from 1st stage of RandomForest
+                = read_param("../Data/RandomForest_reg.csv", 3) # reading the parameters from 1st stage of RandomForest
 n_estimator_step_size = 50 # defining the step change of n_estimator moving from one model to another
 n_estimator_strarting_point, n_estimator_ending_point = low_high_param\
-(n_estimator_midpoint, n_estimator_step_size) # finding lowest and highest values for n_estimators of RandomForest
+(n_estimator_midpoint, n_estimator_step_size, 3) # finding lowest and highest values for n_estimators of RandomForest
 
 max_features_step_size = 1 # defining the step change of max_features moving from one model to another
 max_features_starting_point, max_features_ending_point = low_high_param\
-(max_features_midpoint,max_features_step_size) # finding lowest and highest values for max_features of RandomForest
+(max_features_midpoint,max_features_step_size, 3) # finding lowest and highest values for max_features of RandomForest
     
 max_depth_step_size = 2 # defining the step change of max_depth moving from one model to another
 max_depth_starting_point, max_depth_ending_point = low_high_param\
-(max_depth_midpoint,max_depth_step_size) # finding lowest and highest values for depth_features of RandomForest
+(max_depth_midpoint,max_depth_step_size, 3) # finding lowest and highest values for depth_features of RandomForest
          
                 ### training and testing(through validation sets) all the RandomForest models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
@@ -80,21 +80,21 @@ print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Featur
 input("Press Enter to continue...")
 
 ###################################################################################################################
-############## This part is using Ada Boost in Regression form(Part 2 of the Project) #########################
+################### This part is using AdaBoost in Regression form(Part 2 of the Project) #########################
 ###################################################################################################################
 
 best_regr_score_adaboost = 0 # variable which shows the best scoring AdaBoost model
 progress_adaboost = 0  # variable which indicates how far have we processed our AdaBoost models
 regr_score_adaboost = 0 # variable which shows the score for each of the AdaBoost model
 
-n_estimator_midpoint, learning_rate_midpoint , zero = read_param("../Data/AdaBoost_reg.csv") # reading the parameters from 1st stage of AdaBoost
-n_estimator_step_size = 5 # defining the step change of n_estimator moving from one model to another
+n_estimator_midpoint, learning_rate_midpoint = read_param("../Data/AdaBoost_reg.csv", 2) # reading the parameters from 1st stage of AdaBoost
+n_estimator_step_size = 4 # defining the step change of n_estimator moving from one model to another
 n_estimator_strarting_point, n_estimator_ending_point = low_high_param\
-(n_estimator_midpoint, n_estimator_step_size) # finding lowest and highest values for n_estimators of AdaBoost
+(n_estimator_midpoint, n_estimator_step_size, 2) # finding lowest and highest values for n_estimators of AdaBoost
 
-learning_rate_step_size = 4 # defining the step change of max_features moving from one model to another
+learning_rate_step_size = 3 # defining the step change of max_features moving from one model to another
 learning_rate_starting_point, learning_rate_ending_point = low_high_param\
-(learning_rate_midpoint, learning_rate_step_size) # finding lowest and highest values for learning_rate of AdaBoost
+(learning_rate_midpoint, learning_rate_step_size, 2) # finding lowest and highest values for learning_rate of AdaBoost
          
                 ### training and testing(through validation sets) all the AdaBoost models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
@@ -104,7 +104,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         print("Number of estimator of {}      Learning Rate of {} \
         gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100,\
         regr_score_adaboost*100))  # score of one single AdaBoost model
-        progress_adaboost += 100/9
+        progress_adaboost += 100/25
         adaboostregressor = AdaBoostRegressor(n_estimators = n_estimator_idx,\
         learning_rate = learning_rate_idx/100) # assigning an instance of a AdaBoost
         adaboostregressor.fit(X_train, Y_train)  # fitting the train arrays to each AdaBoost model

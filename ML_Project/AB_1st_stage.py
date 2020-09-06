@@ -38,7 +38,7 @@ n_estimator_strarting_point = 10   # setting the range for n_estimators for diff
 n_estimator_ending_point = 100
 n_estimator_step_size = 10   
 
-learning_rate_starting_point = 5   # setting the range for learning_rates for different AdaBoost models
+learning_rate_starting_point = 7   # setting the range for learning_rates for different AdaBoost models
 learning_rate_ending_point = 100
 learning_rate_step_size = 5               
 
