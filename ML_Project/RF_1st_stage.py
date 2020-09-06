@@ -27,7 +27,7 @@ header, X_train, X_validation, Y_train, Y_validation\
 X_test, Y_test = split_features_labels(my_test_File) # splitting the test.csv file to features and label arrays
                                                                                     
 ###################################################################################################################
-############## This part is using Random Forest in Regression form(Part 2 of the Project) #########################
+############### This part is using RandomForest in Regression form(Part 2 of the Project) #########################
 ###################################################################################################################
 best_regr_score_randomforest = 0 # variable which shows the best scoring RandomForest model
 progress_randomforest = 0  # variable which indicates how far have we processed our RandomForest models
@@ -75,7 +75,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
                 best_max_depth_randomforest = max_depth_idx  
                 best_regr_score_randomforest = regr_score_randomforest 
 os.system('cls')
-print("\n              Random Forest performance ")
+print("\n               RandomForest performance ")
 print("            --------------------------------")  # show the best model of RandomForest tested on validation set
 print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_randomforest*100)) 
 print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : "\

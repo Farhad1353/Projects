@@ -59,7 +59,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
             print("Gradient Boosting Progress : ",int(progress_gradientboosting),"%") # showing the progress of the process
-            print("Number of estimators of {}      Maximum features of {} and Maximum depth of {} \
+            print("Number of estimators of {}      Learning rate of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100, \
                     max_depth_idx, regr_score_gradientboosting*100))  # score of one single GradientBoosting model
             progress_gradientboosting += 100/total_number_of_gradientboosting_models
@@ -77,7 +77,7 @@ os.system('cls')
 print("\n              Gradient Boosting performance ")
 print("            --------------------------------")  # show the best model of GradientBoosting tested on validation set
 print("Best Regressor Score for Gradient Boosting : {:.2f}%".format(best_regr_score_gradientboosting*100)) 
-print("Best Estimator number : ", best_n_estimators_gradientboosting, "\nBest Features number : "\
+print("Best Estimator number : ", best_n_estimators_gradientboosting, "\nBest Learning rate : "\
       , best_learning_rate_gradientboosting/100, "\nbest_max_depth : ",best_max_depth_gradientboosting)
 
 gradientboosting_best_parameters = np.array([best_n_estimators_gradientboosting\

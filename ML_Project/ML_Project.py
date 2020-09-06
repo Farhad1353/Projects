@@ -71,7 +71,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
                 best_max_depth_randomforest = max_depth_idx  
                 best_regr_score_randomforest = regr_score_randomforest 
 os.system('cls')
-print("\n              Random Forest performance ")
+print("\n               RandomForest performance ")
 print("            --------------------------------") # show the best model of RandomForest tested on validation set
 print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_randomforest*100)) 
 print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : "\
@@ -124,38 +124,53 @@ print("Best Estimator number : ", best_n_estimators_adaboost, "\nBest Learning r
 input("Press Enter to continue...")
 
 ###################################################################################################################
-############################### This part is using GradientBoost in Regression form ###############################
+############## This part is using Gradientboosting in Regression form(Part 2 of the Project) ######################
 ###################################################################################################################
-best_regr_score_gb, progress, regr_score = 0, 0, 0   #####################################
-est_str, est_end, est_stp = 75, 90, 5                #### Setting the HyperParameters ####
-learn_str, learn_end, learn_stp = 19, 22, 1          #### for GradientBoost Regressor ####
-maxd_str, maxd_end, maxd_stp = 5, 7, 1               #####################################
 
-########### total number of GradientBoost models is calcualeted here ########################################
-total_steps = int((est_end+est_stp-est_str-1)/est_stp)*int((learn_end+learn_stp-learn_str-1)/learn_stp)*int((maxd_end+maxd_stp-maxd_str-1)/maxd_stp)
+best_regr_score_gradientboosting = 0  # variable which shows the best scoring Gradientboosting model
+progress_gradientboosting = 0   # variable which indicates how far have we processed our Gradientboosting models
+regr_score_gradientboosting = 0 # variable which shows the score for each of the Gradientboosting model
 
-for est_idx in range(est_str, est_end, est_stp):              #################################################
-    for maxf_idx in range(learn_str, learn_end, learn_stp):   ## Nested loops to try all the HyperParameters ##
-        for maxd_idx in range(maxd_str, maxd_end, maxd_stp):  #################################################
+n_estimator_midpoint, learning_rate_midpoint, max_depth_midpoint\
+                = read_param("../Data/Gradientboosting_reg.csv", 3) # reading the parameters from 1st stage of Gradientboosting
+n_estimator_step_size = 5 # defining the step change of n_estimator moving from one model to another
+n_estimator_strarting_point, n_estimator_ending_point = low_high_param\
+(n_estimator_midpoint, n_estimator_step_size, 3) # finding lowest and highest values for n_estimators of Gradientboosting
+
+learning_rate_step_size = 2 # defining the step change of learning_rate moving from one model to another
+learning_rate_starting_point, learning_rate_ending_point = low_high_param\
+(learning_rate_midpoint,learning_rate_step_size, 3) # finding lowest and highest values for learning_rate of Gradientboosting
+    
+max_depth_step_size = 1 # defining the step change of max_depth moving from one model to another
+max_depth_starting_point, max_depth_ending_point = low_high_param\
+(max_depth_midpoint,max_depth_step_size, 3) # finding lowest and highest values for depth_features of Gradientboosting
+         
+                ### training and testing(through validation sets) all the Gradientboosting models
+for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
+    for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):      
+        for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
-            print("GradientBoost Progress : ",int(progress),"%")
-            print("Number of estimator of {}, Learning rate of {:.2f} and Maximum depth of {}  gives accuracy score of {:.2f}%".format(est_idx, maxf_idx/100, maxd_idx, regr_score*100))
-            progress += 100/total_steps
-            regr = GradientBoostingRegressor(n_estimators =est_idx,  learning_rate = maxf_idx/100, max_depth = maxd_idx)
-            regr.fit(X_train, Y_train)   ### Fitting the GradientBoost model #####
-            Y_pred = np.around(regr.predict(X_validation)) ##### Predicting the Labels based on the test features #####
-            regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of each model #####
-            if regr_score > best_regr_score_gb:           ##########################################
-                best_n_estimators_gb = est_idx            ##  Assessing if the model has the best ##
-                best_learning_rate_gb = maxf_idx/100      ##  score so far based on the chosen    ##
-                best_max_depth_gb = maxd_idx              ##           HyperParameters            ##                     ##
-                best_regr_score_gb = regr_score           ##########################################
+            print("Random Forest Progress : ",int(progress_gradientboosting),"%")  # showing the progress of the process
+            print("Number of estimator of {}     Learning rate of {} and Maximum depth of {} \
+                    gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100, \
+                    max_depth_idx, regr_score_gradientboosting*100))  # score of one single Gradientboosting model
+            progress_gradientboosting += 100/27
+            gradientboostingregressor = GradientBoostingRegressor(n_estimators = n_estimator_idx,  \
+                learning_rate = learning_rate_idx/100, max_depth = max_depth_idx) # assigning an instance of a Gradientboosting
+            gradientboostingregressor.fit(X_train, Y_train)  # fitting the train arrays to each Gradientboosting model
+            Y_prediction = np.around(gradientboostingregressor.predict(X_validation)) #predicting using the validation set
+            regr_score_gradientboosting = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+            if regr_score_gradientboosting > best_regr_score_gradientboosting: # assessing if the new score is better 
+                best_n_estimators_gradientboosting = n_estimator_idx      # than the previous best score
+                best_learning_rate_gradientboosting = learning_rate_idx 
+                best_max_depth_gradientboosting = max_depth_idx  
+                best_regr_score_gradientboosting = regr_score_gradientboosting 
 os.system('cls')
-print("\n              GradientBoost performance ")
-print("            --------------------------------")
-print("Best Regressor Score for GradientBoost : {:.2f}%".format(best_regr_score_gb*100)) ## showing the best score ##
-################# showing the best estimaters #################
-print("Best Estimator number : ", best_n_estimators_gb, "\nBest Learning rate : ", best_learning_rate_gb, "\nbest_max_depth : ",best_max_depth_gb)
+print("\n             GradientBoosting performance ")
+print("            --------------------------------") # show the best model of Gradientboosting tested on validation set
+print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_gradientboosting*100)) 
+print("Best Estimator number : ", best_n_estimators_gradientboosting, "\nBest Learning rate : "\
+      , best_learning_rate_gradientboosting/100, "\nbest_max_depth : ",best_max_depth_gradientboosting)
 
 input("Press Enter to continue...")
 
