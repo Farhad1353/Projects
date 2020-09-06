@@ -63,6 +63,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             print("Number of estimator of {} Maximum features of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, \
                     max_depth_idx, regr_score_randomforest*100))  # score of one single RandomForest model
+            print("Best Score so far : ", round(best_regr_score_randomforest*100,2), "%")
             progress_randomforest += 100/27
             randomforestregressor = RandomForestRegressor(n_estimators = n_estimator_idx,  \
                 max_features = max_features_idx, max_depth = max_depth_idx) # assigning an instance of a RandomForest
@@ -120,6 +121,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         print("Number of estimator of {}      Learning Rate of {} \
         gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100,\
         regr_score_adaboost*100))  # score of one single AdaBoost model
+        print("Best Score so far : ", round(best_regr_score_adaboost*100,2), "%")
         progress_adaboost += 100/25
         adaboostregressor = AdaBoostRegressor(n_estimators = n_estimator_idx,\
         learning_rate = learning_rate_idx/100) # assigning an instance of a AdaBoost
@@ -181,6 +183,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             print("Number of estimator of {}     Learning rate of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100, \
                     max_depth_idx, regr_score_gradientboosting*100))  # score of one single Gradientboosting model
+            print("Best Score so far : ", round(best_regr_score_gradientboosting*100,2), "%")
             progress_gradientboosting += 100/27
             gradientboostingregressor = GradientBoostingRegressor(n_estimators = n_estimator_idx,  \
                 learning_rate = learning_rate_idx/100, max_depth = max_depth_idx) # assigning an instance of a Gradientboosting

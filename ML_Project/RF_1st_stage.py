@@ -68,6 +68,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             print("Number of estimators of {}, Maximum features of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, \
                     max_depth_idx, regr_score_randomforest*100))  # score of one single RandomForest model
+            print("Best Score so far : ", round(best_regr_score_randomforest*100,2), "%")
             progress_randomforest += 100/total_number_of_randomforest_models
             randomforestregressor = RandomForestRegressor(n_estimators = n_estimator_idx,  \
             max_features = max_features_idx, max_depth = max_depth_idx) # assigning an instance of a RandomForest

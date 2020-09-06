@@ -60,6 +60,7 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         print("Number of estimators of {} and Learning rate of {}\
         gives accuracy score of {:.2f}%".format(n_estimator_idx, learning_rate_idx/100,\
         regr_score_adaboost*100))  # score of one single AdaBoost model
+        print("Best Score so far : ", round(best_regr_score_adaboost*100,2), "%")
         progress_adaboost += 100/total_number_of_adaboost_models
         adaboostregressor = AdaBoostRegressor(n_estimators = n_estimator_idx,  \
         learning_rate = learning_rate_idx/100) # assigning an instance of a AdaBoost
