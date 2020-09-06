@@ -11,6 +11,7 @@ from sklearn.metrics import accuracy_score
 
 from utils import rgb2gray, get_regression_data, visualise_regression_data # import our libraries
 from assigning_library import read_csv_files, split_train_validation, split_features_labels
+from regression_library import plot_models
 
 #######################################################################################################################
 ## This is Part 1 of the project where we read the train and test csv files and splittig them to features and labels ##
@@ -35,11 +36,11 @@ regr_score_adaboost = 0 # variable which shows the score for each of the AdaBoos
 
 n_estimator_strarting_point = 10   # setting the range for n_estimators for different AdaBoost models
 n_estimator_ending_point = 100
-n_estimator_step_size = 10   
+n_estimator_step_size = 10 
 
 learning_rate_starting_point = 7   # setting the range for learning_rates for different AdaBoost models
 learning_rate_ending_point = 100
-learning_rate_step_size = 5               
+learning_rate_step_size = 3            
 
 number_of_n_estimators \
 = int((n_estimator_ending_point + n_estimator_step_size - n_estimator_strarting_point-1)/n_estimator_step_size)
@@ -48,6 +49,9 @@ number_of_learning_rates \
                    # calculating the total number of AdaBoost models
 total_number_of_adaboost_models = number_of_n_estimators * number_of_learning_rates
 
+adaboost_models = np.zeros((total_number_of_adaboost_models,2))
+model_idx = 0
+best_model = 0
                 ### training and testing(through validation sets) all the AdaBoost models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):    
@@ -62,14 +66,19 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         adaboostregressor.fit(X_train, Y_train)  # fitting the train arrays to each AdaBoost model
         Y_prediction = np.around(adaboostregressor.predict(X_validation)) #predicting using the validation set  
         regr_score_adaboost = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+        adaboost_models[model_idx, 1] = regr_score_adaboost * 100
+        adaboost_models[model_idx, 0] = model_idx
         if regr_score_adaboost > best_regr_score_adaboost:  # assessing if the new score is better 
             best_n_estimators_adaboost = n_estimator_idx        # than the previous best score
             best_learning_rate_adaboost = learning_rate_idx   
             best_regr_score_adaboost = regr_score_adaboost 
+            best_model_score = adaboost_models[model_idx, 1]
+            best_model_idx = adaboost_models[model_idx, 0]
+        model_idx+=1 
 os.system('cls')
 print("\n                Ada Boost performance ")
 print("            --------------------------------")  # show the best model of AdaBoost tested on validation set
-print("Best Regressor Score for Ada Boost : {:.2f}%".format(best_regr_score_adaboost*100)) 
+print("Best Regressor Score for AdaBoost : {:.2f}%".format(best_regr_score_adaboost*100)) 
 print("Best Estimator number : ", best_n_estimators_adaboost, "\nBest Learning : "\
       , best_learning_rate_adaboost/100)
 
@@ -79,7 +88,9 @@ np.savetxt('../Data/AdaBoost_reg.csv', adaboost_best_parameters, fmt="%d", delim
 
 input("Press Enter to continue...")
 
-###################################################################################################################
+plot_models(adaboost_models[:,0], adaboost_models[:,1], "AdaBoost-Models") # Plot all the models
+
+print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )
 
 
 
