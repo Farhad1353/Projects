@@ -11,6 +11,7 @@ from sklearn.metrics import accuracy_score
 
 from utils import rgb2gray, get_regression_data, visualise_regression_data # import our libraries
 from assigning_library import read_csv_files, split_train_validation, split_features_labels
+from regression_library import plot_models
 
 #######################################################################################################################
 ## This is Part 1 of the project where we read the train and test csv files and splittig them to features and labels ##
@@ -35,15 +36,15 @@ regr_score_randomforest = 0 # variable which shows the score for each of the Ran
 
 n_estimator_strarting_point = 100   # setting the range for n_estimators for different RandomForest models
 n_estimator_ending_point = 500
-n_estimator_step_size = 100   
+n_estimator_step_size = 100  
 
 max_features_starting_point = 2   # setting the range for max_features for different RandomForest models
 max_features_ending_point = 10
-max_features_step_size = 2     
+max_features_step_size = 1    
 
 max_depth_starting_point = 3    # setting the range for max_depth for different RandomForest models
 max_depth_ending_point = 40
-max_depth_step_size = 4           
+max_depth_step_size = 4          
 
 number_of_n_estimators \
 = int((n_estimator_ending_point + n_estimator_step_size - n_estimator_strarting_point-1)/n_estimator_step_size)
@@ -54,13 +55,17 @@ number_of_max_depth \
                    # calculating the total number of RandomForest models
 total_number_of_randomforest_models = number_of_n_estimators * number_of_max_features * number_of_max_depth
 
+randomforest_models = np.zeros((total_number_of_randomforest_models,2))
+model_idx = 0
+best_model = 0
+
                 ### training and testing(through validation sets) all the RandomForest models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for max_features_idx in range(max_features_starting_point, max_features_ending_point, max_features_step_size):      
         for max_depth_idx in range(max_depth_starting_point, max_depth_ending_point, max_depth_step_size):  
             os.system('cls')
             print("Random Forest Progress : ",int(progress_randomforest),"%") # showing the progress of the process
-            print("Number of estimators of {}      Maximum features of {} and Maximum depth of {} \
+            print("Number of estimators of {}, Maximum features of {} and Maximum depth of {} \
                     gives accuracy score of {:.2f}%".format(n_estimator_idx, max_features_idx, \
                     max_depth_idx, regr_score_randomforest*100))  # score of one single RandomForest model
             progress_randomforest += 100/total_number_of_randomforest_models
@@ -69,11 +74,16 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             randomforestregressor.fit(X_train, Y_train)  # fitting the train arrays to each RandomForest model
             Y_prediction = np.around(randomforestregressor.predict(X_validation)) #predicting using the validation set  
             regr_score_randomforest = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+            randomforest_models[model_idx, 1] = regr_score_randomforest * 100
+            randomforest_models[model_idx, 0] = model_idx
             if regr_score_randomforest > best_regr_score_randomforest:  # assessing if the new score is better 
                 best_n_estimators_randomforest = n_estimator_idx        # than the previous best score
                 best_max_features_randomforest = max_features_idx 
                 best_max_depth_randomforest = max_depth_idx  
-                best_regr_score_randomforest = regr_score_randomforest 
+                best_regr_score_randomforest = regr_score_randomforest
+                best_model_score = randomforest_models[model_idx, 1]
+                best_model_idx = randomforest_models[model_idx, 0]
+            model_idx+=1 
 os.system('cls')
 print("\n               RandomForest performance ")
 print("            --------------------------------")  # show the best model of RandomForest tested on validation set
@@ -88,7 +98,6 @@ np.savetxt('../Data/RandomForest_reg.csv', randomforest_best_parameters, fmt="%d
 
 input("Press Enter to continue...")
 
-###################################################################################################################
+plot_models(randomforest_models[:,0], randomforest_models[:,1], "RandomForest-Models") # Plot all the models
 
-
-
+print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )

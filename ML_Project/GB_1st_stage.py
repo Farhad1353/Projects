@@ -96,9 +96,8 @@ np.savetxt('../Data/GradientBoosting_reg.csv', gradientboosting_best_parameters,
 
 input("Press Enter to continue...")
 
-###################################################################################################################
 
-plot_models(gradientboost_models[:,0], gradientboost_models[:,1], "GradientBoost-Models")
+plot_models(gradientboost_models[:,0], gradientboost_models[:,1], "GradientBoost-Models") # Plot all the models
 
-print("Best model : model ",int(best_model_idx), " with score of ", best_model_score, "%" )
+print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )
 
