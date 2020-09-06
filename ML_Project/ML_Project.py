@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score
 
 from utils import rgb2gray, get_regression_data, visualise_regression_data # import our libraries
 from assigning_library import read_csv_files, split_train_validation, split_features_labels, read_param
-from regression_library import low_high_param
+from regression_library import low_high_param, show_features_impact
 
 #######################################################################################################################
 ## This is Part 1 of the project where we read the train and test csv files and splittig them to features and labels ##
@@ -199,23 +199,18 @@ print("Regressor Score for StackingRegressor : {:.2f}%".format(ensemble_score*10
 input("Press Enter to continue...")
 
 ###################################################################################################################
-######## PART 6This part is using Linear Regression to represent the most effective features impacting the labels #######
+########## Using Linear Regression to represent the features impact on the labels(Part 6 of the project) ##########
 ###################################################################################################################
 os.system('cls')
-regr = LinearRegression()
-regr.fit(X_train, Y_train) ### Fitting the LinearRegression model #####
-print("\n              Linear Regresson performance ")
-print("            --------------------------------")
+linearregression = LinearRegression()
+linearregression.fit(X_train, Y_train) ### Fitting the LinearRegression model #####
 
-Y_pred = np.around(regr.predict(X_validation))  ##### Predicting the Labels based on the test features #####
-regr_score = accuracy_score(Y_validation, Y_pred)  ##### Calulating the accuracy of the model #####
-print("Regressor Score for LinearRegression: {:.2f}%".format(regr_score*100))
+Y_pred = np.around(linearregression.predict(X_validation))  ##### Predicting the Labels based on the test features #####
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 input("Press Enter to continue...")
 ######## Showing the list of features ranked based the the impact to the prediction ############
-show_features_impact(regr.coef_, X_train, header)
+show_features_impact(linearregression.coef_, X_train, header)
 input("Press Enter to continue...")
-
 ###################################################################################################################
 
 
