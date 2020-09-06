@@ -10,6 +10,7 @@ from sklearn.metrics import accuracy_score
 
 from utils import rgb2gray, get_regression_data, visualise_regression_data # import our libraries
 from assigning_library import read_csv_files, split_train_validation, split_features_labels
+from regression_library import plot_models
 
 #######################################################################################################################
 ## This is Part 1 of the project where we read the train and test csv files and splittig them to features and labels ##
@@ -37,11 +38,11 @@ n_estimator_ending_point = 130
 n_estimator_step_size = 10   
 
 learning_rate_starting_point = 3   # setting the range for learning_rate for different GradientBoosting models
-learning_rate_ending_point = 50
+learning_rate_ending_point = 10
 learning_rate_step_size = 5     
 
 max_depth_starting_point = 3    # setting the range for max_depth for different GradientBoosting models
-max_depth_ending_point = 10
+max_depth_ending_point = 5
 max_depth_step_size = 2           
 
 number_of_n_estimators \
@@ -53,6 +54,9 @@ number_of_max_depth \
                    # calculating the total number of GradientBoosting models
 total_number_of_gradientboosting_models = number_of_n_estimators * number_of_learning_rate * number_of_max_depth
 
+gradientboost_models = np.zeros((total_number_of_gradientboosting_models,2))
+model_idx = 0
+best_model = 0
                 ### training and testing(through validation sets) all the GradientBoosting models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):      
@@ -68,11 +72,16 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             gradientboostingregressor.fit(X_train, Y_train)  # fitting the train arrays to each GradientBoosting model
             Y_prediction = np.around(gradientboostingregressor.predict(X_validation)) #predicting using the validation set  
             regr_score_gradientboosting = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+            gradientboost_models[model_idx, 1] = regr_score_gradientboosting * 100
+            gradientboost_models[model_idx, 0] = model_idx
             if regr_score_gradientboosting > best_regr_score_gradientboosting:  # assessing if the new score is better 
                 best_n_estimators_gradientboosting = n_estimator_idx        # than the previous best score
                 best_learning_rate_gradientboosting = learning_rate_idx 
                 best_max_depth_gradientboosting = max_depth_idx  
-                best_regr_score_gradientboosting = regr_score_gradientboosting 
+                best_regr_score_gradientboosting = regr_score_gradientboosting
+                best_model_score = gradientboost_models[model_idx, 1]
+                best_model_idx = gradientboost_models[model_idx, 0]
+            model_idx+=1 
 os.system('cls')
 print("\n              Gradient Boosting performance ")
 print("            --------------------------------")  # show the best model of GradientBoosting tested on validation set
@@ -89,5 +98,7 @@ input("Press Enter to continue...")
 
 ###################################################################################################################
 
+plot_models(gradientboost_models[:,0], gradientboost_models[:,1], "GradientBoost-Models")
 
+print("Best model : model ",int(best_model_idx), " with score of ", best_model_score, "%" )
 
