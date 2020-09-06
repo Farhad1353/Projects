@@ -169,7 +169,9 @@ learning_rate_starting_point, learning_rate_ending_point = low_high_param\
 max_depth_step_size = 1 # defining the step change of max_depth moving from one model to another
 max_depth_starting_point, max_depth_ending_point = low_high_param\
 (max_depth_midpoint,max_depth_step_size, 3) # finding lowest and highest values for depth_features of Gradientboosting
-         
+gradientboost_models = np.zeros((27,2)) # defining an array for accuracy scores
+model_idx = 0     # index for each model                           
+best_model_score = 0    # variable for the best score    
                 ### training and testing(through validation sets) all the Gradientboosting models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):      
@@ -185,17 +187,26 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             gradientboostingregressor.fit(X_train, Y_train)  # fitting the train arrays to each Gradientboosting model
             Y_prediction = np.around(gradientboostingregressor.predict(X_validation)) #predicting using the validation set
             regr_score_gradientboosting = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+            gradientboost_models[model_idx, 1] = regr_score_gradientboosting * 100 # saving the score for each model
+            gradientboost_models[model_idx, 0] = model_idx       # saving the index for each model
             if regr_score_gradientboosting > best_regr_score_gradientboosting: # assessing if the new score is better 
                 best_n_estimators_gradientboosting = n_estimator_idx      # than the previous best score
                 best_learning_rate_gradientboosting = learning_rate_idx 
                 best_max_depth_gradientboosting = max_depth_idx  
-                best_regr_score_gradientboosting = regr_score_gradientboosting 
+                best_regr_score_gradientboosting = regr_score_gradientboosting
+                best_model_score = gradientboost_models[model_idx, 1]
+                best_model_idx = gradientboost_models[model_idx, 0]
+            model_idx+=1 
 os.system('cls')
 print("\n             GradientBoosting performance ")
 print("            --------------------------------") # show the best model of Gradientboosting tested on validation set
 print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_gradientboosting*100)) 
 print("Best Estimator number : ", best_n_estimators_gradientboosting, "\nBest Learning rate : "\
       , best_learning_rate_gradientboosting/100, "\nbest_max_depth : ",best_max_depth_gradientboosting)
+
+plot_models(gradientboost_models[:,0], gradientboost_models[:,1], "GradientBoost-Models", 'r') # Plot all the models
+
+print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )
 
 input("Press Enter to continue...")
 
