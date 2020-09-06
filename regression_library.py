@@ -6,9 +6,9 @@ import sklearn.datasets
 import matplotlib.pyplot as plt
 from get_colors import colors
 
-def plot_models(X, Y, title_name):
+def plot_models(X, Y, title_name, colour = 'r'):
     plt.figure()
-    plt.scatter(X, Y, c='r')
+    plt.scatter(X, Y, c= colour)
     plt.title(title_name)
     plt.xlabel('Model number')
     plt.ylabel('Accuracy %')

@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score
 
 from utils import rgb2gray, get_regression_data, visualise_regression_data # import our libraries
 from assigning_library import read_csv_files, split_train_validation, split_features_labels, read_param
-from regression_library import low_high_param, show_features_impact
+from regression_library import low_high_param, show_features_impact, plot_models
 
 #######################################################################################################################
 ## This is Part 1 of the project where we read the train and test csv files and splittig them to features and labels ##
@@ -49,7 +49,11 @@ max_features_starting_point, max_features_ending_point = low_high_param\
 max_depth_step_size = 2 # defining the step change of max_depth moving from one model to another
 max_depth_starting_point, max_depth_ending_point = low_high_param\
 (max_depth_midpoint,max_depth_step_size, 3) # finding lowest and highest values for depth_features of RandomForest
-         
+
+randomforest_models = np.zeros((27,2)) # defining an array for accuracy scores
+model_idx = 0     # index for each model                           
+best_model_score = 0    # variable for the best score
+
                 ### training and testing(through validation sets) all the RandomForest models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for max_features_idx in range(max_features_starting_point, max_features_ending_point, max_features_step_size):      
@@ -65,17 +69,26 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
             randomforestregressor.fit(X_train, Y_train)  # fitting the train arrays to each RandomForest model
             Y_prediction = np.around(randomforestregressor.predict(X_validation)) #predicting using the validation set
             regr_score_randomforest = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+            randomforest_models[model_idx, 1] = regr_score_randomforest * 100 # saving the score for each model
+            randomforest_models[model_idx, 0] = model_idx                 # saving the index for each model
             if regr_score_randomforest > best_regr_score_randomforest: # assessing if the new score is better 
                 best_n_estimators_randomforest = n_estimator_idx      # than the previous best score
                 best_max_features_randomforest = max_features_idx 
                 best_max_depth_randomforest = max_depth_idx  
-                best_regr_score_randomforest = regr_score_randomforest 
+                best_regr_score_randomforest = regr_score_randomforest
+                best_model_score = randomforest_models[model_idx, 1]
+                best_model_idx = randomforest_models[model_idx, 0]
+            model_idx+=1 
 os.system('cls')
 print("\n               RandomForest performance ")
 print("            --------------------------------") # show the best model of RandomForest tested on validation set
 print("Best Regressor Score for Random Forest : {:.2f}%".format(best_regr_score_randomforest*100)) 
 print("Best Estimator number : ", best_n_estimators_randomforest, "\nBest Features number : "\
       , best_max_features_randomforest, "\nbest_max_depth : ",best_max_depth_randomforest)
+
+plot_models(randomforest_models[:,0], randomforest_models[:,1], "RandomForest-Models", 'g') # Plot all the models
+
+print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )
 
 input("Press Enter to continue...")
 
@@ -95,7 +108,10 @@ n_estimator_strarting_point, n_estimator_ending_point = low_high_param\
 learning_rate_step_size = 3 # defining the step change of max_features moving from one model to another
 learning_rate_starting_point, learning_rate_ending_point = low_high_param\
 (learning_rate_midpoint, learning_rate_step_size, 2) # finding lowest and highest values for learning_rate of AdaBoost
-         
+adaboost_models = np.zeros((25,2)) # defining an array for accuracy scores
+model_idx = 0     # index for each model                           
+best_model_score = 0    # variable for the best score
+
                 ### training and testing(through validation sets) all the AdaBoost models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):       
@@ -110,16 +126,25 @@ for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_poi
         adaboostregressor.fit(X_train, Y_train)  # fitting the train arrays to each AdaBoost model
         Y_prediction = np.around(adaboostregressor.predict(X_validation)) #predicting using the validation set
         regr_score_adaboost = accuracy_score(Y_validation, Y_prediction) #accuaracy score for each model
+        adaboost_models[model_idx, 1] = regr_score_adaboost * 100 # saving the score for each model
+        adaboost_models[model_idx, 0] = model_idx    # saving the index for each model
         if regr_score_adaboost > best_regr_score_adaboost: # assessing if the new score is better 
             best_n_estimators_adaboost = n_estimator_idx      # than the previous best score
             best_learning_rate_adaboost = learning_rate_idx  
-            best_regr_score_adaboost = regr_score_adaboost 
+            best_regr_score_adaboost = regr_score_adaboost
+            best_model_score = adaboost_models[model_idx, 1]
+            best_model_idx = adaboost_models[model_idx, 0]
+        model_idx+=1
 os.system('cls')
 print("\n                  AdaBoost performance ")
 print("            --------------------------------") # show the best model of AdaBoost tested on validation set
 print("Best Regressor Score for AdaBoost : {:.2f}%".format(best_regr_score_adaboost*100)) 
 print("Best Estimator number : ", best_n_estimators_adaboost, "\nBest Learning rate : "\
       , best_learning_rate_adaboost/100)
+
+plot_models(adaboost_models[:,0], adaboost_models[:,1], "AdaBoost-Models", 'b') # Plot all the models
+
+print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )
 
 input("Press Enter to continue...")
 

@@ -57,7 +57,7 @@ total_number_of_randomforest_models = number_of_n_estimators * number_of_max_fea
 
 randomforest_models = np.zeros((total_number_of_randomforest_models,2))
 model_idx = 0
-best_model = 0
+best_model_score = 0
 
                 ### training and testing(through validation sets) all the RandomForest models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
@@ -98,6 +98,6 @@ np.savetxt('../Data/RandomForest_reg.csv', randomforest_best_parameters, fmt="%d
 
 input("Press Enter to continue...")
 
-plot_models(randomforest_models[:,0], randomforest_models[:,1], "RandomForest-Models") # Plot all the models
+plot_models(randomforest_models[:,0], randomforest_models[:,1], "RandomForest-Models", 'g') # Plot all the models
 
 print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )

@@ -56,7 +56,7 @@ total_number_of_gradientboosting_models = number_of_n_estimators * number_of_lea
 
 gradientboost_models = np.zeros((total_number_of_gradientboosting_models,2))
 model_idx = 0
-best_model = 0
+best_model_score = 0
                 ### training and testing(through validation sets) all the GradientBoosting models
 for n_estimator_idx in range(n_estimator_strarting_point, n_estimator_ending_point, n_estimator_step_size):             
     for learning_rate_idx in range(learning_rate_starting_point, learning_rate_ending_point, learning_rate_step_size):      
@@ -97,7 +97,7 @@ np.savetxt('../Data/GradientBoosting_reg.csv', gradientboosting_best_parameters,
 input("Press Enter to continue...")
 
 
-plot_models(gradientboost_models[:,0], gradientboost_models[:,1], "GradientBoost-Models") # Plot all the models
+plot_models(gradientboost_models[:,0], gradientboost_models[:,1], "GradientBoost-Models", 'r') # Plot all the models
 
 print("Best model : model ",int(best_model_idx), " with score of ", round(best_model_score,2), "%" )
 
