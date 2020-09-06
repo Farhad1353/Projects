@@ -38,11 +38,11 @@ n_estimator_ending_point = 130
 n_estimator_step_size = 10   
 
 learning_rate_starting_point = 3   # setting the range for learning_rate for different GradientBoosting models
-learning_rate_ending_point = 10
+learning_rate_ending_point = 50
 learning_rate_step_size = 5     
 
 max_depth_starting_point = 3    # setting the range for max_depth for different GradientBoosting models
-max_depth_ending_point = 5
+max_depth_ending_point = 10
 max_depth_step_size = 2           
 
 number_of_n_estimators \
